@@ -129,3 +129,32 @@ A `Proc` is an unnamed block that can be passed around and called when desired.
 ### Strict Arity
 
 "Methods and lambdas, on the other hand, have strict arity, which means you must pass the exact number of arguments that the method or lambda expects."
+
+# Tests
+
+## Language
+
+### Test Suite
+
+"The entire set of tests that accompanies your program or application. You can think of this as *all the tests* for a project."
+
+### Test
+
+"A situation or context in which tests are run. For example, this test is about making sure you get an error message after trying to log in with the wrong password. A test can contain multiple assertions."
+
+### Assertion
+
+"The actual verification step to confrirm that the data returned by your program or application is indeed what you expected. You make one or more assertions within a test."
+
+```ruby
+class CarTest < Minitest::Test
+  def test_wheels
+    car = Car.new
+    assert_equal(4, car.wheels)
+  end
+end
+```
+
+- **Test Suite** = `CarTest`
+- **Test** =       `test_wheels`
+- **Assertion** = 'assert_equal`
