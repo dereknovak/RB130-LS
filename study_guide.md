@@ -156,5 +156,5 @@ end
 ```
 
 - **Test Suite** = `CarTest`
-- **Test** =       `test_wheels`
-- **Assertion** = 'assert_equal`
+- **Test** = `test_wheels`
+- **Assertion** = `assert_equal`
