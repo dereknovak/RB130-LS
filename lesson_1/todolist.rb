@@ -1,7 +1,3 @@
-# This class represents a todo item and its associated
-# data: name and description. There's also a "done"
-# flag to show whether this todo item is done.
-
 class TodoList
   attr_accessor :title
 
@@ -13,10 +9,9 @@ class TodoList
   def add(todo)
     raise TypeError, "Can only add Todo objects" unless todo.is_a?(Todo)
     @todos << todo
-
-  rescue TypeError => e
-    puts e.message
   end
+
+  alias_method :<<, :add
 
   def size
     @todos.size
