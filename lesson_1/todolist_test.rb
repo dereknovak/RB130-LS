@@ -1,3 +1,5 @@
+require 'simplecov'
+SimpleCov.start
 require 'minitest/autorun'
 require "minitest/reporters"
 Minitest::Reporters.use!
@@ -101,5 +103,69 @@ class TodoListTest < Minitest::Test
     @list.remove_at(1)
     assert_equal(@todo3, @list.item_at(1))
     assert_raises(IndexError) { @list.remove_at(2) }
+  end
+
+  def test_to_s
+    output = <<~OUTPUT.chomp
+    ---- Today's Todos ----
+    [ ] Buy milk
+    [ ] Clean room
+    [ ] Go to gym
+    OUTPUT
+
+    assert_equal(output, @list.to_s)
+  end
+
+  def test_to_s_with_done
+    @todo2.done!
+
+    output = <<~OUTPUT.chomp
+    ---- Today's Todos ----
+    [ ] Buy milk
+    [X] Clean room
+    [ ] Go to gym
+    OUTPUT
+
+    assert_equal(output, @list.to_s)
+  end
+
+  def test_to_s_all_done
+    @list.done!
+
+    output = <<~OUTPUT.chomp
+    ---- Today's Todos ----
+    [X] Buy milk
+    [X] Clean room
+    [X] Go to gym
+    OUTPUT
+
+    assert_equal(output, @list.to_s)
+  end
+
+  def test_each_method
+    todo_list = []
+    @list.each { |todo| todo_list << todo }
+    assert_equal(todo_list, @list.to_a)
+  end
+
+  def test_each_original
+    result = @list.each { |todo| "Something random" }
+    assert_same(result, @list)
+  end
+
+  def test_select
+    @todo2.done!
+    @todo3.done!
+
+    result = @list.select { |todo| todo.done? }
+    assert_equal(result.to_a, [@todo2, @todo3])
+    refute_same(result.to_a, [@todo2, @todo3])
+  end
+
+  def test_find_by_title
+    result = @list.find_by_title('Clean room')
+    assert_equal(result, @todo2)
+    result2 = @list.find_by_title('Random')
+    assert_nil(result2)
   end
 end
