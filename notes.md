@@ -124,363 +124,407 @@ if method definition has a &, pass in a &. If not, do not pass one in.
 
 # ### BLOCKS
 
-# # 1, What are closures?
+# 1, What are closures?
 
-# # 2, What is binding?
+# 2, What is binding?
 
-# # 3, How does binding affect the scope of closures?
+# 3, How does binding affect the scope of closures?
 
-# # 4, How do blocks work?
+# 4, How do blocks work?
 
-# # 5, When do we use blocks? (List the two reasons)
-# 1. Defer some implementation details during method invocation time. 
-# def times
-# 2. OUr code performinng before and after actions, i.e. sandwich code. 
+# 5, When do we use blocks? (List the two reasons)
 
-# # 6, Describe the two reasons we use blocks, use examples.
+# 6, Describe the two reasons we use blocks, use examples.
 
-# # 7, When can you pass a block to a method? Why?
+# 7, When can you pass a block to a method? Why?
 
-# # 8, How do we make a block argument manditory?
+# 8, How do we make a block argument manditory?
 
-# # 9, How do methods access both implicit and explicit blocks passed in?
-# yield, access by variable name
+# 9, How do methods access both implicit and explicit blocks passed in?
 
-# def test(&block)
-#   puts "What's &block? #{block}" # block = nil
+# 10, What is `yield` in Ruby and how does it work?
+
+# 11, How do we check if a block is passed into a method?
+
+# 12, Why is it important to know that methods and blocks can return closures?
+
+# def sequence
+#   counter = 0
+#   Proc.new { counter += 1 }
 # end
 
-# test
+# s1 = sequence
+# p s1.call # 1
+# p s1.call # 2
+# p s1.call # 3
 
-# def test2(block)
-#   puts "hello"
-#   block.call          # calls the block that was originally passed to test()
-#   puts "good-bye"
+# s2 = sequence 
+# p s2.call # 1
+# p s1.call # 4
+# p s2.call # 2
+
+# 13, What are the benifits of explicit blocks?
+
+# 14, Describe the arity differences of blocks, procs, methods and lambdas.
+
+# 15, What other differences are there between lambdas and procs? (might not be assessed on this, but good to know)
+
+# 16, What does `&` do when in a the method parameter?
+
+# def method(&var)
+#   var.call
+#   yield
 # end
 
-# def test(&block)
-#   puts "1"
-#   test2(block)
-#   puts
+# 17, What does `&` do when in a method invocation argument?
 
-# # 10, What is `yield` in Ruby and how does it work?
+# ```ruby
+# method(&var)
+# ```
 
-# # 11, How do we check if a block is passed into a method?
+# 18, What is happening in the code below?
 
-# # 12, Why is it important to know that methods and blocks can return closures?
+# arr = [1, 2, 3, 4, 5]
 
-# # def sequence
-# #   counter = 0
-# #   Proc.new { counter += 1 }
-# # end
+# p arr.map(&:to_s) # specifically `&:to_s`
 
-# # s1 = sequence
-# # p s1.call # 1
-# # p s1.call # 2
-# # p s1.call # 3
+# arr.map do |num|
+#   num.to_s
+# end
 
-# # s2 = sequence 
-# # p s2.call # 1
-# # p s1.call # 4
-# # p s2.call # 2
+# (&:to_s) # => { |num| num.to_s }
 
-# # 13, What are the benifits of explicit blocks?
+# a_proc = :to_s.to_proc
+# p arr.map(&a_proc)
 
-# # 14, Describe the arity differences of blocks, procs, methods and lambdas.
-
-# # 15, What other differences are there between lambdas and procs? (might not be assessed on this, but good to know)
-
-# # 16, What does `&` do when in a the method parameter?
-
-# # def method(&var)
-# #   var.call
-# #   yield
-# # end
-
-# # 17, What does `&` do when in a method invocation argument?
-
-# # ```ruby
-# # method(&var)
-# # ```
-
-# # 18, What is happening in the code below?
-
-# # arr = [1, 2, 3, 4, 5]
-
-# # p arr.map(&:to_s) # specifically `&:to_s`
-
-# # arr.map do |num|
-# #   num.to_s
-# # end
-
-# # (&:to_s) # => { |num| num.to_s }
-
-# # a_proc = :to_s.to_proc
-# # p arr.map(&a_proc)
-
-# # 19, How do we get the desired output without altering the method or the method invocations?
+# 19, How do we get the desired output without altering the method or the method invocations?
 
 
-# # def call_this
-# #   yield(2)
-# # end
+# def call_this
+#   yield(2)
+# end
 
-# # to_s = Proc.new { |n| n.to_i }
-# # to_i = Proc.new { |n| n.to_s }
+# to_s = Proc.new { |n| n.to_i }
+# to_i = Proc.new { |n| n.to_s }
 
-# # p call_this(&to_s) # => returns 2
-# # p call_this(&to_i) # => returns "2"
+# p call_this(&to_s) # => returns 2
+# p call_this(&to_i) # => returns "2"
 
 
-# # 20, How do we invoke an explicit block passed into a method using `&`? Provide example.
+# 20, How do we invoke an explicit block passed into a method using `&`? Provide example.
 
-# # 21, What concept does the following code demonstrate?
+# 21, What concept does the following code demonstrate?
 
-# # def time_it
-# #   time_before = Time.now
-# #   yield
-# #   time_after= Time.now
-# #   puts "It took #{time_after - time_before} seconds."
-# # end
+# def time_it
+#   time_before = Time.now
+#   yield
+#   time_after= Time.now
+#   puts "It took #{time_after - time_before} seconds."
+# end
 
 # 22, What will be outputted from the method invocation `block_method('turtle')` below? Why does/doesn't it raise an error?
 
-def block_method(animal, animal2)
-  yield(animal)
-end
+# def block_method(animal)
+#   yield(animal)
+# end
 
-block_method('turtle', 'seal') do |turtle, seal|
-  puts "This is a #{turtle} and a #{seal}."
-end
+# block_method('turtle', 'seal') do |turtle|
+#   puts "This is a #{turtle}" #and a #{seal}."
+# end
 
-# # 23, What will be outputted if we add the follow code to the code above? Why?
+# 23, What will be outputted if we add the follow code to the code above? Why?
 
-# # animal = 'seal'
-# # block_method('turtle') { 
-# #  
-# #   puts "This is a #{animal}."}
-
-
-# # 24, What will the method call `call_me` output? Why?
-
-# # def call_me(some_code) # Proc
-# #   some_code.call
-# # end
-
-# # name = "Robert"
-# # chunk_of_code = Proc.new {puts "hi #{name}"}
-# # name = "Griffin"
-
-# # call_me(chunk_of_code)
+# animal = 'seal'
+# block_method('turtle') { 
+#  
+#   puts "This is a #{animal}."}
 
 
-# # 25, What happens when we change the code as such:
+# 24, What will the method call `call_me` output? Why?
 
-# # ```ruby
-# # def call_me(some_code)
-# #   some_code.call
-# # end
+# def call_me(some_code) # Proc
+#   some_code.call
+# end
 
-# # chunk_of_code = Proc.new {puts "hi #{name}"}
-# # name = "Griffin"
+# name = "Robert"
+# chunk_of_code = Proc.new {puts "hi #{name}"}
+# name = "Griffin"
 
-# # call_me(chunk_of_code)
-# # ```
-
-# # 26, What will the method call `call_me` output? Why?
+# call_me(chunk_of_code)
 
 
+# 25, What happens when we change the code as such:
+
+# ```ruby
 # def call_me(some_code)
 #   some_code.call
 # end
 
-# # def name
-# #   "Joe"
-# # end
-
-# #name = "Robert"
-
 # chunk_of_code = Proc.new {puts "hi #{name}"}
-
-# # def name
-# #   "Joe"
-# # end
+# name = "Griffin"
 
 # call_me(chunk_of_code)
+# ```
+
+# 26, What will the method call `call_me` output? Why?
+
+
+def call_me(some_code)
+  some_code.call
+end
 
 # def name
 #   "Joe"
 # end
 
+#name = "Robert"
 
-# # 27, Why does the following raise an error?
+chunk_of_code = Proc.new {puts "hi #{name}"}
 
-# # ```ruby
-# # def a_method(pro)
-# #   pro.call
-# # end
-
-# # a = 'friend'
-# # a_method(&a)
-# # ```
-
-# # 28, Why does the following code raise an error?
-
-# # ```ruby
-# # def some_method(block)
-# #   block_given?
-# # end
-
-# # bl = { puts "hi" }
-
-# # p some_method(bl)
-# # ```
-
-# # 29, Why does the following code output `false`?
-
-# # ```ruby
-# # def some_method(block)
-# #   block_given?
-# # end
-
-# # bloc = proc { puts "hi" }
-
-# # p some_method(bloc)
-# # ```
-
-# # 30, How do we fix the following code so the output is `true`? Explain
-
-# # ```ruby
-# # def some_method(block)
-# #   block_given? # we want this to return `true`
-# # end
-
-# # bloc = proc { puts "hi" } # do not alter this code
-
-# # p some_method(bloc)
-# # ```
-
-# # 31, How does `Kernel#block_given?` work?
-
-# # 32, Why do we get a `LocalJumpError` when executing the below code? &
-# # How do we fix it so the output is `hi`? (2 possible ways)
-
-# # ```ruby
-# # def some(block)
-# #   yield
-# # end
-
-# # bloc = proc { p "hi" } # do not alter
-
-# # some(bloc)
-# # ```
-
-# # 33, What does the following code tell us about lambda's? (probably not assessed on this but good to know)
-
-# # ```ruby
-# # bloc = lambda { p "hi" }
-
-# # bloc.class # => Proc
-# # bloc.lambda? # => true
-
-# # new_lam = Lambda.new { p "hi, lambda!" } # => NameError: uninitialized constant Lambda
-# # ```
-
-# # 34, What does the following code tell us about explicitly returning from proc's and lambda's? (once again probably not assessed on this, but good to know ;)
-
-# # ```ruby
-# # def lambda_return
-# #   puts "Before lambda call."
-# #   lambda {return}.call
-# #   puts "After lambda call."
-# # end
-
-# # def proc_return
-# #   puts "Before proc call."
-# #   proc {return}.call
-# #   puts "After proc call."
-# # end
-
-# # lambda_return #=> "Before lambda call."
-# #               #=> "After lambda call."
-
-# # proc_return #=> "Before proc call."
-
-# # ```
-
-# # 35, What will `#p` output below? Why is this the case and what is this code demonstrating?
-
-# # ```ruby
-# # def retained_array
-# #   arr = []
-# #   Proc.new do |el|
-# #     arr << el
-# #     arr
-# #   end
-# # end
-
-# # arr = retained_array
-# # arr.call('one')
-# # arr.call('two')
-# # p arr.call('three')
-# # ```
-
-# ### TESTING WITH MINITEST
-
-# # 36, What is a test suite?
-
-# # 37, What is a test?
-
-# # 38, What is an assertion?
-
-# # 39, What do testing framworks provide?
-# Testing frameworks provide methods and class structures to design and perform unit tests. Specifically, they enable the setting up and tearing down of tests and provide assertion methods for the actual testing process. 
-
-# # 40, What are the differences of Minitest vs RSpec
- 
-# # 41, What is Domain Specific Language (DSL)?
-
-# # 42, What is the difference of assertion vs refutation methods?
-
-# # 43, How does assert_equal compare its arguments?
-
-# # 44, What is the SEAT approach and what are its benefits?
-# approach to writing tests
-# S = set up
-# E = execute
-# A = assert
-# T = tear down
-# reduce redundant codes for S and T
-
-# # 45, When does setup and tear down happen when testing?
-
-# # 46, What is code coverage?
-# # metric to gauge test quality
-
-# # 47, What is regression testing?
-
-# ### CORE TOOLS
-
-# # 48, What are the purposes of core tools?
-
-# # 49, What are RubyGems and why are they useful?
-
-# # 50, What are Version Managers and why are they useful?
-
-# # 51, What is Bundler and why is it useful?
-# # What is a Gemfile and Gemfile.lock
-# # What does bundle exec do
-
-# # 52, What is Rake and why is it useful?
-
-
-# # 53, What constitues a Ruby project?
-
-
-# def test(&block)
-#   puts "What's &block? #{block.call}"
+# def name
+#   "Joe"
 # end
 
-# test #{ "something" }
+call_me(chunk_of_code)
+
+def name
+  "Joe"
+end
+
+
+# 27, Why does the following raise an error?
+
+# ```ruby
+# def a_method(pro)
+#   pro.call
+# end
+
+# a = 'friend'
+# a_method(&a)
+# ```
+
+# 28, Why does the following code raise an error?
+
+# ```ruby
+# def some_method(block)
+#   block_given?
+# end
+
+# bl = { puts "hi" }
+
+# p some_method(bl)
+# ```
+
+# 29, Why does the following code output `false`?
+
+# ```ruby
+# def some_method(block)
+#   block_given?
+# end
+
+# bloc = proc { puts "hi" }
+
+# p some_method(bloc)
+# ```
+
+# 30, How do we fix the following code so the output is `true`? Explain
+
+# ```ruby
+# def some_method(block)
+#   block_given? # we want this to return `true`
+# end
+
+# bloc = proc { puts "hi" } # do not alter this code
+
+# p some_method(bloc)
+# ```
+
+# 31, How does `Kernel#block_given?` work?
+
+# 32, Why do we get a `LocalJumpError` when executing the below code? &
+# How do we fix it so the output is `hi`? (2 possible ways)
+
+# ```ruby
+# def some(block)
+#   yield
+# end
+
+# bloc = proc { p "hi" } # do not alter
+
+# some(bloc)
+# ```
+
+# 33, What does the following code tell us about lambda's? (probably not assessed on this but good to know)
+
+# ```ruby
+# bloc = lambda { p "hi" }
+
+# bloc.class # => Proc
+# bloc.lambda? # => true
+
+# new_lam = Lambda.new { p "hi, lambda!" } # => NameError: uninitialized constant Lambda
+# ```
+
+# 34, What does the following code tell us about explicitly returning from proc's and lambda's? (once again probably not assessed on this, but good to know ;)
+
+# ```ruby
+# def lambda_return
+#   puts "Before lambda call."
+#   lambda {return}.call
+#   puts "After lambda call."
+# end
+
+# def proc_return
+#   puts "Before proc call."
+#   proc {return}.call
+#   puts "After proc call."
+# end
+
+# lambda_return #=> "Before lambda call."
+#               #=> "After lambda call."
+
+# proc_return #=> "Before proc call."
+
+# ```
+
+# 35, What will `#p` output below? Why is this the case and what is this code demonstrating?
+
+# ```ruby
+# def retained_array
+#   arr = []
+#   Proc.new do |el|
+#     arr << el
+#     arr
+#   end
+# end
+
+# arr = retained_array
+# arr.call('one')
+# arr.call('two')
+# p arr.call('three')
+# ```
+
+### TESTING WITH MINITEST
+
+# 36, What is a test suite?
+
+# 37, What is a test?
+
+# 38, What is an assertion?
+
+# 39, What do testing frameworks provide?
+
+# 40, What are the differences of Minitest vs RSpec
+
+# 41, What is Domain Specific Language (DSL)?
+
+# 42, What is the difference of assertion vs refutation methods?
+
+# 43, How does assert_equal compare its arguments?
+
+# 44, What is the SEAT approach and what are its benefits?
+
+# 45, When does setup and tear down happen when testing?
+
+# 46, What is code coverage?
+
+# 47, What is regression testing?
+
+### CORE TOOLS
+
+# 48, What are the purposes of core tools?
+
+# 49, What are RubyGems and why are they useful?
+
+# 50, What are Version Managers and why are they useful?
+
+# 51, What is Bundler and why is it useful?
+
+# 52, What is Rake and why is it useful?
+
+# 53, What constitues a Ruby project?
+
+
+# def method_name(&var) # block -> Proc
+#   var.call
+#   yield
+# end
+
+# block = Proc.new {puts "this is the proc"}
+
+# #method_name { puts "this is the block" }
+
+# method_name(&block) # Proc -> block
 
 ******************************************
+
+- Keyword Parameter
+https://medium.com/@sologoubalex/keyword-parameters-in-ruby-e93d7a268151
+
+****************************
+SPOT with Suk Sien
+
+Exam
+- 20 questions - 3 hours
+- last question, coding challenge, last hour
+- At least 3 from the medium section
+- No rubocop errors
+- Provides the test quite
+  - Read thru all of the test suites
+  - Understand the problem is an important section
+- Click start the exam to get the info on Rubocop
+  - Aim for 0 errors
+  - Extract/Helper Methods
+
+Packaging the code
+- Just follow the 2 bullet points, won't have to package anything real
+
+Closure/Binding
+When a closure is created, it binds all the local artifacts within its scope
+
+Fix this example, but a good place to start
+```ruby
+def a_method(&name)
+  name.call
+end
+
+name = 'Derek'
+a_method { puts name }
+new_proc = Proc.new { puts name }
+name = 'Novak'
+a_method(new_proc)
+
+a_method { puts name }
+
+name = 'Derek'
+
+```
+
+Yielding
+Blocks/Procs have lenient arity
+  - Do not care the number of arguments passed in
+  - Automatically assigns block parameters to nil unless an argument is passed in
+
+```ruby
+def transform(word)
+  puts "Before #{word}"
+  after = yield(word)
+  puts "After: #{after}"   
+end
+
+transform('hello') {|w| w.upcase}
+```
+
+Have an example ready
+- Test setting up the situation
+- A test is a situation that you want to check
+
+- The actual verification step for test
+
+- Ruby gems
+  - a package or library of code that you can download and use 
+
+- Bundler
+  - A dependency manager
+  - Installing bundler will allow you to find and manage any dependencies within the files
+  - Allows you to configure
