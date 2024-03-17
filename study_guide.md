@@ -6,7 +6,7 @@
 
 ### Block
 
-A block is an anonymous closure that is created a method invocation and executed within it using the `yield` keyword. Unlike a `Proc` object, blocks are not saved to variables and are executed almost immediately.
+A block is an anonymous closure that is created at a method invocation and executed within it using the `yield` keyword. Unlike a `Proc` object, blocks are not saved to variables and are executed within the method invocation in which they are arguments.
 
 ```ruby
 def excited_greet
