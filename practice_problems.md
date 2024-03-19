@@ -61,182 +61,227 @@ For this example, the "bread" part of the *sandwich code* includes outputting th
 
 # 7, When can you pass a block to a method? Why?
 
-# 8, How do we make a block argument manditory?
+A block can always be passed to a method, even if the method completely ignores it. By default, all methods accept an *implicit block*, which do not need to be defined within the method's parameters. If a block is required by the method, an *explicit block* can be added as a parameter, which requires a block to be passed in. The block is then converted to a `Proc` object upon invocation.
+
+# 8, How do we make a block argument mandatory?
+
+A block can be made mandatory by speciffying an *explicit block* within a method's parameters. An explicit block is prepended with an `&` and converted into a `Proc` object.
 
 # 9, How do methods access both implicit and explicit blocks passed in?
 
+A method can access an implicit block by yielding to it using the `yield` keyword. This "jumps" to the block and executes it. A method can access an explicit block by including it as a parameter, prepending the parameter variable with an `&`. This converts the block to a `Proc` object, which can be called within the method using the `Proc#call` method.
+
 # 10, What is `yield` in Ruby and how does it work?
+
+The `yield` keyword executes the implicit block passed into the method where it is located.
 
 # 11, How do we check if a block is passed into a method?
 
+A method can checked whether a block has been passed into it using the `Kernel#block_given?` method, which returns `true` if an implicit block has been passed into the method.
+
 # 12, Why is it important to know that methods and blocks can return closures?
 
-# def sequence
-#   counter = 0
-#   Proc.new { counter += 1 }
-# end
-
-# s1 = sequence
-# p s1.call # 1
-# p s1.call # 2
-# p s1.call # 3
-
-# s2 = sequence 
-# p s2.call # 1
-# p s1.call # 4
-# p s2.call # 2
+Returning a closure from a method or block allows the closure to be called repeatedly. This allows a new binding to be established each iteration which can create a naturally tranformative structure. This also allows multiple `Proc` object to exist simultaneously, which can help the user keep track of multiple kinds of similar data.
 
 # 13, What are the benifits of explicit blocks?
 
+An explicit block allows for greater flexibility of the block within the method. For implicit block, we can only really yield to the block and test whether it is present; however, explicit blocks can be renamed, called repeatedly, and can even be passed to methods within the method.
+
 # 14, Describe the arity differences of blocks, procs, methods and lambdas.
+
+Arity refers to how a structure handles arguments that are passed into it. Blocks and `Proc` objects contain *lenient arity*, which means that they are not affected with the incorrect number of arguments passed in, whether too few or many. Method and lambdas, on the other hand, have *strict arity*, which means that they must have the correct amount of arguments, dictated by the parameters, otherwise an `ArgumentError` exception will be thrown.
 
 # 15, What other differences are there between lambdas and procs? (might not be assessed on this, but good to know)
 
 # 16, What does `&` do when in a the method parameter?
 
-# def method(&var)
-#   var.call
-#   yield
-# end
+```ruby
+def method(&var)
+  var.call
+  yield
+end
+```
+
+The `&`, when used within a method parameter, denotes an *explicit block*. Upon invocation of the method, the block is then converted into a simple `Proc` object, allowing it to be renamed, called multiple times, and passed around throughout the method definition.
 
 # 17, What does `&` do when in a method invocation argument?
 
-# ```ruby
-# method(&var)
-# ```
+```ruby
+method(&var)
+```
+
+The `&`, when used within a method argument, converts the `Proc` object into a block before getting passed into a method invocation. If the object is not a `Proc`, Ruby tries to convert it to one using `Symbol#to_proc`, which will throw a `TypeError` exception if not a symbol.
 
 # 18, What is happening in the code below?
 
-# arr = [1, 2, 3, 4, 5]
+```ruby
+arr = [1, 2, 3, 4, 5]
 
-# p arr.map(&:to_s) # specifically `&:to_s`
+p arr.map(&:to_s) # specifically `&:to_s`
 
-# arr.map do |num|
-#   num.to_s
-# end
+arr.map do |num|
+  num.to_s
+end
 
-# (&:to_s) # => { |num| num.to_s }
+(&:to_s) # => { |num| num.to_s }
 
-# a_proc = :to_s.to_proc
-# p arr.map(&a_proc)
+a_proc = :to_s.to_proc
+p arr.map(&a_proc)
+```
+
+On line 3, the `map` method is called on local variable `arr` and gets passed `&:to_s` as an argument. Before invocation of the `map` method occurs, the `:to_s` symbol is converted into a `Proc` object by the hidden `to_proc` method. This new `Proc` version of the `to_s` method is then passed into the `map` and called on each element referenced by `arr`, returning and outputting the new transformed array `["1", "2", "3", "4", "5"]`.
+
+Line 5 calls the `map` method on `arr` and passes an implicit `do...end` block as an argument. While we cannot see the inner workings of `map`, it is understood that a loop is formed that iterates through each element of `arr`, yielding the current element to the block, which is converted to a string by invocation of the `to_s` method. This produces the same result as line 3 without the need to convert the symbol to a `Proc`, then to a block first.
+
+The last approach in a similar way to the first example, but manually convert the `:to_s` symbol to a `Proc` before passing it in as an argument to the `map` method invocation. Because `:to_s` is now a `Proc` object referenced by `a_proc`, the `to_proc` method does not need to be called before invocation and the `Proc` can simply be converted directly into a block.
 
 # 19, How do we get the desired output without altering the method or the method invocations?
 
+```ruby
+def call_this
+  yield(2)
+end
 
-# def call_this
-#   yield(2)
-# end
+to_s = Proc.new { |n| n.to_i }
+to_i = Proc.new { |n| n.to_s }
 
-# to_s = Proc.new { |n| n.to_i }
-# to_i = Proc.new { |n| n.to_s }
+p call_this(&to_s) # => returns 2
+p call_this(&to_i) # => returns "2"
+```
 
-# p call_this(&to_s) # => returns 2
-# p call_this(&to_i) # => returns "2"
-
+To fix this code, the `to_s` and `to_i` methods should be represented by a symbol.
 
 # 20, How do we invoke an explicit block passed into a method using `&`? Provide example.
 
+You can invoke the explicit block by using `Proc#call` on the method local variable representing it. This works because the `&` operator converts the block to a simple `Proc` object upon invocation of the method.
+
+```ruby
+def a_method(&block)
+  block.call
+end
+
+a_method { puts "Do the thing" }  # Do the thing
+```
+
 # 21, What concept does the following code demonstrate?
 
-# def time_it
-#   time_before = Time.now
-#   yield
-#   time_after= Time.now
-#   puts "It took #{time_after - time_before} seconds."
-# end
+```ruby
+def time_it
+  time_before = Time.now
+  yield
+  time_after= Time.now
+  puts "It took #{time_after - time_before} seconds."
+end
+```
+
+This example represents **sandwich code**, which has a common "before" and "after" method execution while leaving the "meat" of the invocation flexible to the specific implementation of the method's user. In this case, the current `Time` is recorded both before and after a given block is executed, allowing for flexible implementation of the `time_it` method with a consistent output of the time taken across all invocations of the method.
 
 # 22, What will be outputted from the method invocation `block_method('turtle')` below? Why does/doesn't it raise an error?
 
-# def block_method(animal)
-#   yield(animal)
-# end
+```ruby
+def block_method(animal)
+  yield(animal)
+end
 
-# block_method('turtle', 'seal') do |turtle|
-#   puts "This is a #{turtle}" #and a #{seal}."
-# end
+block_method('turtle', 'seal') do |turtle|
+  puts "This is a #{turtle}" #and a #{seal}."
+end
+```
+
+This example will throw an `ArgumentError` exception due to the `block_method` *strict arity*. Because methods have strict arity, the number of arguments passed in must match the number of parameters present; in this case, the method requires 1 argument but is provided 2. Although blocks have *lenient arity*, the invocation of the method will still occur and therefore the error will be thrown.
+
 
 # 23, What will be outputted if we add the follow code to the code above? Why?
 
-# animal = 'seal'
-# block_method('turtle') { 
-#  
-#   puts "This is a #{animal}."}
+```ruby
+animal = 'seal'
+block_method('turtle') { puts "This is a #{animal}."}
+```
 
+Adding this code in place of the previous one will output `This is a seal.`. Although `animal` is passed as an argument to the `yield` and the given block does not have a parameter, the *lenient arity* of the block prevents any issues from arising. Since `animal` is no longer a parameter, the block checks its binding for its value and finds `animal = 'seal'` on the previous line, as this variable was assigned before the block was created, its within the binding's scope, and there were no further assignments before the `block_method` invocation.
 
 # 24, What will the method call `call_me` output? Why?
 
-# def call_me(some_code) # Proc
-#   some_code.call
-# end
+```ruby
+def call_me(some_code) # Proc
+  some_code.call
+end
 
-# name = "Robert"
-# chunk_of_code = Proc.new {puts "hi #{name}"}
-# name = "Griffin"
+name = "Robert"
+chunk_of_code = Proc.new {puts "hi #{name}"}
+name = "Griffin"
 
-# call_me(chunk_of_code)
+call_me(chunk_of_code)
+```
 
+This example will output `hi Griffin`. When the `Proc` object is instantiated on line 6, a binding is established that encloses its immediate lexical scope. Within this scope, `name` is initialized, then reassigned to `"Griffin"` on the following line. This binding travels with the `Proc` into the `call_me` method invocation, which gets called on its first line. Due to the binding, the `Proc` can see the `name` local variable and see its new value of `"Griffin"` established on line 7; therefore this is value that is output within the string interpolation.
 
 # 25, What happens when we change the code as such:
 
-# ```ruby
-# def call_me(some_code)
-#   some_code.call
-# end
-
-# chunk_of_code = Proc.new {puts "hi #{name}"}
-# name = "Griffin"
-
-# call_me(chunk_of_code)
-# ```
-
-# 26, What will the method call `call_me` output? Why?
-
-
+```ruby
 def call_me(some_code)
   some_code.call
 end
 
-# def name
-#   "Joe"
-# end
-
-#name = "Robert"
-
 chunk_of_code = Proc.new {puts "hi #{name}"}
-
-# def name
-#   "Joe"
-# end
+name = "Griffin"
 
 call_me(chunk_of_code)
+```
+
+Although `name = "Griffin"` is within the lexical scope where the `Proc` object is instantiated, the binding is established *before* the local variable gets initialized; therefore, when searching for `name` after calling the `Proc` within the `call_me` method, Ruby is unable to find `name` and throws a `NameError` exception.
+
+# 26, What will the method call `call_me` output? Why?
+
+```ruby
+def call_me(some_code)
+  some_code.call
+end
 
 def name
   "Joe"
 end
 
+name = "Robert"
+
+chunk_of_code = Proc.new {puts "hi #{name}"}
+
+def name
+  "Joe"
+end
+
+call_me(chunk_of_code)
+```
+
+A few notable things occur in this example:
+
+- When the `Proc` object is instantiated on line 11, a binding is established that can see the `call_me` method, the `name` method, and the `name` local variable.
+- The `name` method is redefined after the binding the simply return `"Joe"`.
+
+When calling the `Proc` object on line 2, because the binding can see both the local variable and method, Ruby is unsure which is being referenced and prioritizes the local variable. The last assignment of it was `"Robert"`, which gets interpolated into the string and outputs `hi Robert`.
 
 # 27, Why does the following raise an error?
 
-# ```ruby
-# def a_method(pro)
-#   pro.call
-# end
+```ruby
+def a_method(pro)
+  pro.call
+end
 
-# a = 'friend'
-# a_method(&a)
-# ```
+a = 'friend'
+a_method(&a)
+```
 
 # 28, Why does the following code raise an error?
 
-# ```ruby
-# def some_method(block)
-#   block_given?
-# end
+```ruby
+def some_method(block)
+  block_given?
+end
 
-# bl = { puts "hi" }
+bl = { puts "hi" }
 
-# p some_method(bl)
-# ```
+p some_method(bl)
+```
 
 # 29, Why does the following code output `false`?
 

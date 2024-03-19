@@ -79,17 +79,35 @@ a_method { puts "This will not" }
 
 ### Explicit Blocks
 
+https://launchschool.com/lessons/c0400a9c/assignments/5a060a20
+
 "However, there are times when you want a method to take an explicit block; an explicit block is a block that gets treated as a named object -- that is, it gets assigned to a method parameter so that it can be managed like any other object -- it can be reassigned, passed to other methods, and invoked many times."
+
+"Why do we now need an explicit block instead? Chiefly, the answer is that it provides additional flexibility. Before, we didn't have a handle (a variable) for the implicit block, so we couldn't do much with it except yield to it and test whether a block was provided. Now we have a variable that represents the block, so we can pass the block to another method:"
 
 If a defined method requires a block in order to function, an explicit block can be denoted within the method's parameters. Explicit blocks are represented by a parameter prepended with `&`, which converts the block to a `Proc` object and is called using the `Proc#call` method.
 
+An explicit block allows for greater flexibility of the block within the method. For implicit blocks, we can only really yield to the block and test whether it is present; however, explicit blocks can be renamed, called repeatedly, and can even be passed to methods within the method.
+
 ```ruby
-def a_method(&block)
-  puts block
+def perform_action(block)
+  puts "Starting activity"
+  block.call
+  puts "Activity concluded"
 end
 
-a_method { 'testing' }
-# #<Proc:0x0000000107d69c48 /Users/...>
+def program(&block)
+  puts "Opening program"
+  perform_action(block)
+  puts "Closing program"
+end
+
+program { puts "Doing stuff" }
+# Opening program
+# Starting activity
+# Doing stuff
+# Activity concluded
+# Closing program
 ```
 
 ## When to use blocks
@@ -131,6 +149,8 @@ The method user interacts with a previously defined method, calling the method o
 ## Sandwich code
 
 "There will be times when you want to write a generic method that performs some "before" and "after" action. Before and after what? That's exactly the point -- the method implementor doesn't care: before and after anything."
+
+Sandwich code has a common "before" and "after" method execution while leaving the "meat" of the invocation flexible to the specific implementation of the method's user.
 
 Examples:
 - Timing, logging, notification systems
@@ -198,9 +218,22 @@ A `Proc` is an unnamed block that can be passed around and called when desired.
 
 "The rule regarding the number of arguments that you must pass to a block, proc, or lambda in Ruby is called its arity."
 
+Arity refers to how a structure handles arguments that are passed into it. Blocks and `Proc` objects contain *lenient arity*, which means that they are not affected with the incorrect number of arguments passed in, whether too few or many. Method and lambdas, on the other hand, have *strict arity*, which means that they must have the correct amount of arguments, dictated by the parameters, otherwise an `ArgumentError` exception will be thrown.
+
 ### Lenient Arity
 
 "In Ruby, blocks and procs have lenient arity, which is why Ruby doesn't complain when you pass in too many or too few arguments to a block."
+
+```ruby
+def important_toppings
+  yield('pepperoni', 'cheese', 'sausage', 'mushrooms')
+end
+
+important_toppings do |topping1, topping2|
+  puts "#{topping1} and #{topping2}"
+end
+# pepperoni and cheese
+```
 
 ### Strict Arity
 
