@@ -271,6 +271,8 @@ a = 'friend'
 a_method(&a)
 ```
 
+The example above raises a `TypeError` exception due to the the value referenced by `a` being a string object. When the `&` operator is used within a method argument, it will try to convert a `Proc` object to a block. If the object is not a `Proc`, it will then also try `Symbol#to_proc`. Because the string is neither a `Proc` nor a `Symbol`, a `TypeError` exception will be thrown.
+
 # 28, Why does the following code raise an error?
 
 ```ruby
@@ -283,44 +285,48 @@ bl = { puts "hi" }
 p some_method(bl)
 ```
 
+This example throws a `SyntaxError` due to attempting to assign a block to local variable `bl`. Unlike a `Proc` object, blocks cannot be assigned to a variable and passed around. Also, even if the `Proc` successfully passes into the method, the `block_given?` method checks for an implicit block. 
+
 # 29, Why does the following code output `false`?
 
-# ```ruby
-# def some_method(block)
-#   block_given?
-# end
+```ruby
+def some_method(block)
+  block_given?
+end
 
-# bloc = proc { puts "hi" }
+bloc = proc { puts "hi" }
 
-# p some_method(bloc)
-# ```
+p some_method(bloc)
+```
+
+The example outputs `false` because `block_given?` returns false, as no block was passed into the method. Although the `Proc` object appears as a block on line 5, it does function slightly differently than a block would when passed into a method invocation. The `block_given?` method returns `true` only if `yield` would execute a block in the current context, and a method does not yield to a proc using the `yield` keyword.
 
 # 30, How do we fix the following code so the output is `true`? Explain
 
-# ```ruby
-# def some_method(block)
-#   block_given? # we want this to return `true`
-# end
+```ruby
+def some_method(block)
+  block_given? # we want this to return `true`
+end
 
-# bloc = proc { puts "hi" } # do not alter this code
+bloc = proc { puts "hi" } # do not alter this code
 
-# p some_method(bloc)
-# ```
+p some_method(bloc)
+```
 
 # 31, How does `Kernel#block_given?` work?
 
 # 32, Why do we get a `LocalJumpError` when executing the below code? &
 # How do we fix it so the output is `hi`? (2 possible ways)
 
-# ```ruby
-# def some(block)
-#   yield
-# end
+```ruby
+def some(block)
+  yield
+end
 
-# bloc = proc { p "hi" } # do not alter
+bloc = proc { p "hi" } # do not alter
 
-# some(bloc)
-# ```
+some(bloc)
+```
 
 # 33, What does the following code tell us about lambda's? (probably not assessed on this but good to know)
 
