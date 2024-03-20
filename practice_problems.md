@@ -361,22 +361,26 @@ some(bloc)
 
 # ```
 
-# 35, What will `#p` output below? Why is this the case and what is this code demonstrating?
+# 35, What will `p` output below? Why is this the case and what is this code demonstrating?
 
-# ```ruby
-# def retained_array
-#   arr = []
-#   Proc.new do |el|
-#     arr << el
-#     arr
-#   end
-# end
+```ruby
+def retained_array
+  arr = []
+  Proc.new do |el|
+    arr << el
+    arr
+  end
+end
 
-# arr = retained_array
-# arr.call('one')
-# arr.call('two')
-# p arr.call('three')
-# ```
+arr = retained_array
+arr.call('one')
+arr.call('two')
+p arr.call('three')
+```
+
+The `p` method invocation will output `['one', 'two', 'three']`.
+
+On line 9, the returned value of the `retained_array` method invocation is assigned to local variable `arr`. This method returns a `Proc` object, which concatenates the block local variable `el` to the array object referenced by the `retained_array` method local variable `arr`. Because each new proc returned from the method establishes its own binding, `arr` on line 2 will progressively reference `[]`, `['one']`, and `['one', 'two']` for each new binding when calling the proc. Then, after executing the final proc on line 12, its return value, as indicated on line 5, will represent the full `['one', 'two', 'three']`.
 
 ### TESTING WITH MINITEST
 

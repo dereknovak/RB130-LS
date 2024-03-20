@@ -1,3 +1,29 @@
+# RB130 Concepts
+
+## Navigation
+
+1. [Closures](#closures)
+  - [Blocks/Procs/Lambdas](#blocks-procs-and-lambdas)
+  - [Bindings](#binding)
+  - [Block Arguments](#block-arguments)
+  - [When to use blocks](#when-to-use-blocks)
+  - [Returning a closure](#returning-a-closure)
+  - [Symbol to Proc](#symbol-to-proc)
+  - [Yielding](#yielding)
+  - [Arity](#arity)
+2. [Testing](#testing)
+  - [Lanugage](#language)
+  - [Minitest vs RSpec](#minitest-vs-rspec)
+  - [SEAT](#seat-approach)
+  - [Assertions](#assertions)
+3. [Packaging Code into a Project](#packaging-code-into-a-project)
+  - [DSL]
+  - [Testing Frameworks]
+  - [RubyGems]
+  - [Bundler]
+  - [Gemfile]
+  - [Rake]
+
 # Closures
 
 "A closure is a general programming concept that allows programmers to save a "chunk of code" and execute it at a later time. It's called a "closure" because it's said to bind its surrounding artifacts (ie, names like variables and methods) and build an "enclosure" around everything so that they can be referenced when the closure is later executed."
@@ -146,7 +172,7 @@ The method implementor defines a specific method that the method user will inter
 
 The method user interacts with a previously defined method, calling the method on objects throughout the prgram and implementing more specific details through the use of closures.
 
-## Sandwich code
+### Sandwich code
 
 "There will be times when you want to write a generic method that performs some "before" and "after" action. Before and after what? That's exactly the point -- the method implementor doesn't care: before and after anything."
 
@@ -168,7 +194,7 @@ transform_number(18) { |num| num + 42 }
 # After: 60
 ```
 
-### Returning a Closure
+## Returning a Closure
 
 "Methods and blocks can return a chunk of code by returning a `Proc` or `lambda`."
 
@@ -189,7 +215,7 @@ num1.call  # =>  3 (num1 continues)
 ```
 Because a new binding is established upon the instantiation of each `Proc` object, the value referenced by `count` will be different. For example, on line 5 when `num1` is assigned, the `increment` method is first invoked, which has `count` set to `0`. A `Proc` object is instantiated, establishing a new binding which sees the assignment of `count`, then returned from the method, assigning the `Proc` itself to `num1`. When called on line 6, because the `Proc` binding sees `count = 0`, the closure *reassigns* `count` to `1` within this iteration of `increment`. On line 9, a *new* invocation of `increment` is executed, which instantiates a different `Proc` object with a separate binding. Because these 2 bindings exist within separate instances of `increment`, `num2` sees the incrementation of `11` and `12`, while `num1` continues to move to `3` on line 13.
 
-### Symbol to Proc
+## Symbol to Proc
 
 When prepending a method argument with `&`, Ruby first tries to convert it into a block. If the object is not a `Proc`, Ruby will then try to call the `Symbol#to_proc` method to convert it into a `Proc` so that it can be passed in as a block.
 
@@ -209,10 +235,6 @@ transform('hello', &upcase_proc)  # => "HELLO"
 "If your method implementation contains a yield, a developer using your method can come in after this method is fully implemented and inject additional code in the middle of this method (without modifying the method implementation), by passing in a block of code."
 
 The `yield` keyword executes the block that has been passed into a method invocation.
-
-## Proc
-
-A `Proc` is an unnamed block that can be passed around and called when desired.
 
 ## Arity
 
@@ -247,7 +269,7 @@ end
 
 "The entire set of tests that accompanies your program or application. You can think of this as *all the tests* for a project."
 
-A test suite is a collection of all the tests for an application.
+A test suite is a collection of all of the tests for an application.
 
 ### Test
 
@@ -273,6 +295,163 @@ end
 - **Test Suite** = `CarTest`
 - **Test** = `test_wheels`
 - **Assertion** = `assert_equal`
+
+## Minitest vs RSpec
+
+### Miniteset
+
+- Comes installed with Ruby
+- Uses normal Ruby syntax
+  - Simple to write
+
+Assertion syntax
+
+```ruby
+require 'minitest/autorun'
+
+require_relative 'car'
+
+class CarTest < Minitest::Test
+  def test_wheels
+    car = Car.new
+    assert_equal 4, car.wheels
+  end
+end
+```
+
+Expectation syntax
+
+- Uses *expectation matchers* rather than assertions to check the returned data. This reads much more closely to RSpec.
+
+```ruby
+require 'minitest/autorun'
+
+require_relative 'car'
+
+describe 'Car#wheels' do
+  it 'has 4 wheels' do
+    car = Car.new
+    _(car.wheels).must_equal 4
+  end
+end
+```
+
+### RSpec
+
+- Does not come installed with Ruby
+- A DSL that uses more naturally reading code
+  - Difficult to write
+
+```ruby
+class CarTest < Minitest::Test
+  def setup                 # S
+    @car = Car.new
+  end
+
+  def test_wheels
+    wheels = @car.wheels    # E
+    assert_equal 4, wheels  # A
+  end
+
+  def teardown              # T
+    puts "End of test"
+  end
+end
+```
+
+## SEAT Approach
+
+https://launchschool.com/lessons/dd2ae827/assignments/5c80633e
+
+### S
+
+"Set up the necessary objects."
+Set up the objects that will be used throughout testing.
+
+### E
+
+"Execute the code against the object we're testing."
+Execute code that will produce a specific result.
+
+### A
+
+"Assert that the executed code did the right thing."
+Assert that the executed code produced the expected result.
+
+### T
+
+"Tear down and clean up any lingering artifacts."
+Tear down any remaining used throughout testing.
+
+## Assertions
+
+### `assert`
+
+Fails unless its argument evaluates as true.
+
+```ruby
+assert 'hello'
+```
+ 
+### `assert_equal`
+
+Fails unless the expected return matches the *value* of the actual return.
+
+```ruby
+assert_equal 'Bob', Person.new('Bob').name
+```
+
+### `assert_same`
+
+Fails unless the expected return matches the *object id* of the actual return.
+
+```ruby
+assert_same 4, Car.new.wheels
+```
+
+### `assert_nil`
+
+Fails unless its argument returns `nil`.
+
+```ruby
+assert_nil puts 'Hello'
+```
+
+### `assert_raises`
+
+Fails unless the code executed within its block produces the argument exception.
+
+```ruby
+assert_raises(ArgumentError) do
+  hash.key?
+end
+```
+
+### `assert_includes`
+
+Fails unless the provided element is included in the given collection.
+
+```ruby
+assert_includes nums, 5
+```
+
+### `assert_instance_of`
+
+Fails unless the provided object is an instance of the given class.
+
+```ruby
+assert_instance_of String, 'Hello World!'
+```
+
+### Refutation
+
+Most assertions contain its oposing counterpart, a **refutation**. These will pass *unless* the refutation matches.
+
+# Packaging Code into a Project
+
+## Domain Specific Language
+
+Domain Specific Language (DSL) is specialized syntax used to write code for a specific application or file. This syntax is typically determined by the program, allowing for greater flexibility and code that reads like natural language.
 
 ## Bundler
 
