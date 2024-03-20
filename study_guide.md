@@ -2,27 +2,27 @@
 
 ## Navigation
 
-1. [Closures](#closures)
-  - [Blocks/Procs/Lambdas](#blocks-procs-and-lambdas)
-  - [Bindings](#binding)
-  - [Block Arguments](#block-arguments)
-  - [When to use blocks](#when-to-use-blocks)
-  - [Returning a closure](#returning-a-closure)
-  - [Symbol to Proc](#symbol-to-proc)
-  - [Yielding](#yielding)
-  - [Arity](#arity)
-2. [Testing](#testing)
-  - [Lanugage](#language)
-  - [Minitest vs RSpec](#minitest-vs-rspec)
-  - [SEAT](#seat-approach)
-  - [Assertions](#assertions)
-3. [Packaging Code into a Project](#packaging-code-into-a-project)
-  - [DSL]
-  - [Testing Frameworks]
-  - [RubyGems]
-  - [Bundler]
-  - [Gemfile]
-  - [Rake]
+- [Closures](#closures)
+    - [Blocks/Procs/Lambdas](#blocks-procs-and-lambdas)
+    - [Bindings](#binding)
+    - [Block Arguments](#block-arguments)
+    - [When to use blocks](#when-to-use-blocks)
+    - [Returning a closure](#returning-a-closure)
+    - [Symbol to Proc](#symbol-to-proc)
+    - [Yielding](#yielding)
+    - [Arity](#arity)
+- [Testing](#testing)
+    - [Lanugage](#language)
+    - [Minitest vs RSpec](#minitest-vs-rspec)
+    - [SEAT](#seat-approach)
+    - [Assertions](#assertions)
+- [Packaging Code into a Project](#packaging-code-into-a-project)
+    - [DSL]
+    - [Testing Frameworks]
+    - [RubyGems]
+    - [Bundler]
+    - [Gemfile]
+    - [Rake]
 
 # Closures
 
