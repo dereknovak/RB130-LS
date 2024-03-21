@@ -240,7 +240,7 @@ The `yield` keyword executes the block that has been passed into a method invoca
 
 "The rule regarding the number of arguments that you must pass to a block, proc, or lambda in Ruby is called its arity."
 
-Arity refers to how a structure handles arguments that are passed into it. Blocks and `Proc` objects contain *lenient arity*, which means that they are not affected with the incorrect number of arguments passed in, whether too few or many. Method and lambdas, on the other hand, have *strict arity*, which means that they must have the correct amount of arguments, dictated by the parameters, otherwise an `ArgumentError` exception will be thrown.
+Arity refers to how a structure handles arguments that are passed into it. Blocks and `Proc` objects contain *lenient arity*, which means that they are not affected with the incorrect number of arguments passed in, whether too few or many. Method and lambdas, conversely, have *strict arity*, which means that they must have the correct amount of arguments, dictated by the parameters, otherwise an `ArgumentError` exception will be thrown.
 
 ### Lenient Arity
 
@@ -342,6 +342,10 @@ end
 - A DSL that uses more naturally reading code
   - Difficult to write
 
+## SEAT Approach
+
+https://launchschool.com/lessons/dd2ae827/assignments/5c80633e
+
 ```ruby
 class CarTest < Minitest::Test
   def setup                 # S
@@ -358,10 +362,6 @@ class CarTest < Minitest::Test
   end
 end
 ```
-
-## SEAT Approach
-
-https://launchschool.com/lessons/dd2ae827/assignments/5c80633e
 
 ### S
 
@@ -453,9 +453,70 @@ Most assertions contain its oposing counterpart, a **refutation**. These will pa
 
 Domain Specific Language (DSL) is specialized syntax used to write code for a specific application or file. This syntax is typically determined by the program, allowing for greater flexibility and code that reads like natural language.
 
+## Ruby Version Manager
+
+https://launchschool.com/books/core_ruby_tools/read/ruby_version_managers
+
+"Ruby version managers are programs that let you install, manage, and use multiple versions of Ruby."
+
+Because Ruby is a fast-growing programming language that sees periodic updates, different projects may require different versions of Ruby. In order to easily manage the current version of Ruby that your computer uses, a *Ruby Version Manager* can be utilized to quickly install, manage, and switch to the appropriate version of Ruby. The most common Ruby Version Managers employed are **RVM** and **rbenv**.
+
 ## Bundler
 
+https://launchschool.com/books/core_ruby_tools/read/bundler
+
 "Bundler lets you describe exactly which Ruby and Gems you want to use with your Ruby apps. Specifically, it lets you install multiple versions of each Gem under a specific version of Ruby and then use the proper version in your app."
+
+The **Bundler** RubyGem acts as a dependency manager, allowing the programmer to dictate which version of Ruby and RubyGems their program will use.
+
+### Gemfile
+
+"Bundler relies on a text file named Gemfile to tell it which version of Ruby and its Gems it should use. This file is a simple Ruby program that uses a Domain Specific Language (DSL) to provide details about the Ruby and Gem versions. It's the configuration or instruction file for Bundler."
+
+The `Gemfile` file within a program configures the depenedencies that the application will use. Within this file, the programmer can indicate which version of both Ruby and the included RubyGems that are required, using a Domain Specific Language to include details for each. After all changes have been indicated, the `bundle install` command can be executed within the terminal, creating a `Gemfile.lock` file that includes all of the application's version information
+
+Gemfile
+```ruby
+source 'https://rubygems.org'
+
+ruby '2.3.1'
+gem 'sinatra'
+gem 'erubis'
+gem 'rack'
+gem 'rake'
+```
+
+Gemfile.lock
+```
+GEM
+  remote: https://RubyGems.org/
+  specs:
+    erubis (2.7.0)
+    rack (1.6.4)
+    rack-protection (1.5.3)
+      rack
+    rake (10.4.2)
+    sinatra (1.4.7)
+      rack (~> 1.5)
+      rack-protection (~> 1.4)
+      tilt (>= 1.3, < 3)
+    tilt (2.0.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  erubis
+  rack
+  rake
+  sinatra
+
+RUBY VERSION
+   ruby 2.3.1p112
+
+BUNDLED WITH
+   1.13.6
+```
 
 ### Dependency
 
