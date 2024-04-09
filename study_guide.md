@@ -17,16 +17,20 @@
     - [SEAT](#seat-approach)
     - [Assertions](#assertions)
 - [Packaging Code into a Project](#packaging-code-into-a-project)
-    - [DSL]
+    - [DSL](#domain-specific-language)
     - [Testing Frameworks]
-    - [RubyGems]
-    - [Bundler]
-    - [Gemfile]
-    - [Rake]
+    - [RubyGems](#rubygems)
+    - [Bundler](#bundler)
+    - [Gemfile](#gemfile)
+    - [Rake](#rake)
+    - [Code Coverage](#simplecov-code-coverage)
+    - [.gemspec](#gemspec)
 
 # Closures
 
 "A closure is a general programming concept that allows programmers to save a "chunk of code" and execute it at a later time. It's called a "closure" because it's said to bind its surrounding artifacts (ie, names like variables and methods) and build an "enclosure" around everything so that they can be referenced when the closure is later executed."
+
+A closure is a chunk of code, delimited by either `do...end` or `{...}`, that encloses the nearby artifacts as a *binding*, allowing both to be passed around a codebase and executed at a later time.
 
 ## Blocks, Procs, and Lambdas
 
@@ -198,6 +202,8 @@ transform_number(18) { |num| num + 42 }
 
 "Methods and blocks can return a chunk of code by returning a `Proc` or `lambda`."
 
+Returning a closure from a method or block allows the closure to be called repeatedly, establishing a new binding each iteration which can create a naturally transformative structure. Additionally, multiple Proc object can exist simultaneously, allowing the user keep track of multiple values of similar data.
+
 ```ruby
 def increment(count = 0)
   Proc.new { count += 1 }
@@ -234,7 +240,7 @@ transform('hello', &upcase_proc)  # => "HELLO"
 
 "If your method implementation contains a yield, a developer using your method can come in after this method is fully implemented and inject additional code in the middle of this method (without modifying the method implementation), by passing in a block of code."
 
-The `yield` keyword executes the block that has been passed into a method invocation.
+The `yield` keyword executes the block that has been passed into a method invocation. When passed arguments, the values assigned will be bound to any parameters within the block.
 
 ## Arity
 
@@ -461,6 +467,16 @@ https://launchschool.com/books/core_ruby_tools/read/ruby_version_managers
 
 Because Ruby is a fast-growing programming language that sees periodic updates, different projects may require different versions of Ruby. In order to easily manage the current version of Ruby that your computer uses, a *Ruby Version Manager* can be utilized to quickly install, manage, and switch to the appropriate version of Ruby. The most common Ruby Version Managers employed are **RVM** and **rbenv**.
 
+## RubyGems
+
+https://launchschool.com/books/core_ruby_tools/read/gems
+
+"RubyGems, often just called Gems, are packages of code that you can download, install, and use in your Ruby programs or from the command line."
+
+RubyGems are packages of code that perform a specific task in conjunction with a Ruby program or the command line.
+
+Common gems: pry, rubocope, minitest, bundler, rake
+
 ## Bundler
 
 https://launchschool.com/books/core_ruby_tools/read/bundler
@@ -528,6 +544,40 @@ BUNDLED WITH
 
 https://launchschool.com/books/core_ruby_tools/read/bundler#bundleexec
 
+Resolve dependency issues
+
 ## Rake
 
+https://launchschool.com/books/core_ruby_tools/read/rake
+
 "Rake is a Rubygem that automates many common functions required to build, test, package, and install programs"
+
+Rake is a RubyGem that automates frequently used processes throughout an application project, including the building, testing, packaging, and other repeated tasks of the project.
+
+## SimpleCov (Code Coverage)
+
+https://launchschool.com/lessons/dd2ae827/assignments/9f7c1f7c
+
+"When writing tests, we want to get an idea of code coverage, or how much of our actual program code is tested by a test suite."
+
+"Note that even though we are only testing public code, code coverage is based on all of your code, both public and private. Also, this doesn't mean every edge case is considered, or even that our program is working correctly. It only means that we have some tests in place for every method. "
+
+## .gemspec
+
+"Most Ruby projects use Rubygems as the distribution mechanism. This requires that you observe certain practices when building your project. Specifically, you must use a common directory structure and you must supply a `.gemspec` file."
+
+```
+.gemspec
+Gem::Specification.new do |s|
+  s.name        = 'todolist_project'
+  s.version     = '1.0.0'
+  s.summary     = 'Todo List Manager!'
+  s.description = 'This is a simple todo list manager!'
+  s.authors     = ['Pete Williams']
+  s.email       = 'pw@example.com'
+  s.homepage    = 'http://example.com/todolist_project'
+  s.files       = ['lib/todolist_project.rb', 'test/todolist_project_test.rb']
+end
+```
+
+

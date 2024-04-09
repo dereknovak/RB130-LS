@@ -528,3 +528,10 @@ Have an example ready
   - A dependency manager
   - Installing bundler will allow you to find and manage any dependencies within the files
   - Allows you to configure
+
+
+
+Parameters to procs
+Arguments to blocks
+
+proc = -> { proc stuff}
