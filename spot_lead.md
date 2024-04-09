@@ -1,6 +1,8 @@
 # Study Guide
 
 ```ruby
+=begin
+
 - Blocks
     - Closures, binding, and scope
     - How blocks work, and when we want to use them
@@ -30,6 +32,8 @@
     - Zero Rubocop complaints
     - Code should pass all tests
     - Double-check previous 2 points before submitting
+
+=end
 ```
 
 # Questions
