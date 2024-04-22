@@ -28,7 +28,7 @@
 
 - Coding Challenge
     - You will have access to testing suite
-    - Difficulty is an easier medium problem
+    - Difficulty is roughly easy/medium
     - Zero Rubocop complaints
     - Code should pass all tests
     - Double-check previous 2 points before submitting
